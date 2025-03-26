@@ -1,0 +1,28 @@
+# The super linter support multiple languages and engines,
+# it has potential to be an all-in-one solution for lint, 
+# allowing the workflows to be dry and organized.
+
+name: Linter
+on: [pull_request]
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      packages: read
+      statuses: write # To report GitHub Actions status checks
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Super-linter
+      uses: super-linter/super-linter@v7.3.0 
+      env: # To report GitHub Actions status checks
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        # MARKDOWN_CONFIG_FILE: .github/workflow/config/markdown-lint.yml
