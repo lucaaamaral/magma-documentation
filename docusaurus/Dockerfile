@@ -17,6 +17,8 @@
 # The slim version is based on a small Debian image.
 FROM node:26-slim AS base
 ENV FORCE_COLOR=0
+# Bootstrap Yarn Classic (corepack is unbundled from Node 25+); yarn manages all project deps.
+RUN npm install -g yarn@1.22.22
 WORKDIR /opt/docusaurus
 
 # Documentation contents from readmes/ (via additional_contexts)
@@ -28,35 +30,35 @@ COPY versioned_sidebars versioned_sidebars
 
 # Configuration files
 COPY docusaurus.config.js .
-COPY package.json package-lock.json* ./
+COPY package.json yarn.lock ./
 COPY sidebars.js .
 COPY sidebars.json .
 COPY test.js .
 COPY versions.json .
 
 WORKDIR /opt/docusaurus
-RUN [ ! -d "node_modules" ] && npm install --package-lock-only && npm ci
+RUN [ -d "node_modules" ] || yarn install --frozen-lockfile
 
 #==================================================================
 # Local deployment
 #==================================================================
 FROM base AS dev
 EXPOSE 3000
-CMD ["npm", "run", "start", "--", "--poll", "1000"]
+CMD ["yarn", "start", "--poll", "1000"]
 
 #==================================================================
 # Base image for production deployment
 #==================================================================
 FROM base AS prod
 ENV NODE_OPTIONS="--max-old-space-size=4096"
-RUN npm run build
+RUN yarn build
 
 #==================================================================
 # Production deployment
 #==================================================================
 FROM prod AS serve
 EXPOSE 3000
-CMD ["npm", "run", "serve", "--", "--no-open"]
+CMD ["yarn", "serve", "--no-open"]
 
 #==================================================================
 # Production deployment with Caddy automatic SSL/TLS

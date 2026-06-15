@@ -47,6 +47,19 @@ services:
       - caddy_data:/data
       - caddy_config:/config
 
+  # Regenerate docusaurus/yarn.lock after changing package.json
+  #   docker compose run --rm lockgen
+  lockgen:
+    image: node:26-slim
+    working_dir: /tmp
+    volumes:
+      - .:/out
+    command: >
+      sh -c "npm install -g yarn@1.22.22 &&
+             cp /out/package.json . &&
+             yarn install &&
+             cp yarn.lock /out/yarn.lock"
+
 volumes:
   caddy_data:
   caddy_config:
