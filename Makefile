@@ -9,7 +9,7 @@ precommit:  ## Run docs precommit checks
 precommit_fix:  ## Try to fix existing precommit issues
 	make -C readmes precommit_fix
 
-sidebar_check:  ## Check if all pages are implemented with sidebars for 1.7.0, 1.8.0, and latest
+sidebar_check:  ## Check if all pages are implemented with sidebars
 	python3 check_sidebars.py
 
 # Ref: https://marmelab.com/blog/2016/02/29/auto-documented-makefile.html

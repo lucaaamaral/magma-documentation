@@ -136,7 +136,7 @@ def main():
     """
     Check if all pages are implemented in the sidebar.
     """
-    versions = ("latest", "1.8.0", "1.7.0")
+    versions = ("latest", "1.9.0", "1.8.0", "1.7.0")
     pages_not_implemented = {v: set() for v in versions}
     for v in versions:
         all_pages = get_all_pages(version=v)
